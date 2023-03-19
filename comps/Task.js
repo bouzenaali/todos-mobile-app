@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         opacity: 0.4,
         borderRadius:5,
         marginRight:15,
+        
     },
     itemText:{
         maxWidth:'80%',
