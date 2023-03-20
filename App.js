@@ -1,28 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Task from './comps/Task';
+import React,{ useState } from 'react';
 
 export default function App() {
+  const [task, setTask] = useState();
+  const [taskItems, setTaskItems] = useState([]);
+
+  const handleTextInput = () =>{
+    Keyboard.dismiss()
+    setTaskItems([...taskItems, task])
+    setTask(null)
+  }
+
+  const completeTask = (index) =>{
+    let itemsCopy = [...taskItems]
+    itemsCopy.splice(index, 1)
+    setTaskItems(itemsCopy)
+  }
+
   return (
     <View style={styles.container}>
       {/* Today's tasls */}
       <View style={styles.taskWrapper}>
         <Text style={styles.sectionTitle}>Today's tasks</Text>
         <View style={styles.items}>
-          {/* this is where the tasks will go! */}
-          <Task text='task 1' />
-          <Task text='task 2' />
-          <Task text='task 3' />
+        { 
+          taskItems.map((item, index) => {
+           return (
+            <TouchableOpacity key={index} onPress={()=> completeTask(index)}>
+              <Task  text={item} />
+            </TouchableOpacity>
+           )
+          })
+        }
         </View>
       </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style ={styles.writeTaskWrapper} >
-            <TextInput style={styles.input} placeholder="write a task" />
+            <TextInput style={styles.input} placeholder="write a task" value={task} onChangeText={text => setTask(text)}/>
             <TouchableOpacity>
               <View style={styles.addWrapper}>
-                <Text style={styles.addText}>+</Text>
+                <Text style={styles.addText} onPress={()=> handleTextInput()}>+</Text>
               </View>
             </TouchableOpacity>
         </KeyboardAvoidingView>
